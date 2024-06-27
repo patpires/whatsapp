@@ -51,10 +51,21 @@
     <script>
         function mencionarTodos() {
             var mensagem = document.getElementById('mensagemMencionar').value;
-            var inputBox = document.querySelectorAll("[contenteditable='true']")[1];
+            var inputBox = document.querySelector("div[contenteditable='true']");
+            if (!inputBox) {
+                console.error("Campo de entrada de mensagem não encontrado.");
+                return;
+            }
+
             var event = new InputEvent('input', { bubbles: true });
 
-            var groupMembers = document.querySelectorAll(".copyable-text span[title]");
+            // Selecionar membros do grupo
+            var groupMembers = document.querySelectorAll("div[role='button'] span[title]");
+            if (groupMembers.length === 0) {
+                console.error("Membros do grupo não encontrados.");
+                return;
+            }
+
             var mentions = "";
             groupMembers.forEach(member => {
                 mentions += "@" + member.title + " ";
@@ -65,7 +76,8 @@
 
             // Aguardar um momento para garantir que o conteúdo seja inserido corretamente
             setTimeout(() => {
-                var sendButton = document.querySelector("span[data-icon='send']");
+                // Selecionar o botão de envio
+                var sendButton = document.querySelector("button[type='button'][data-testid='compose-btn-send']");
                 if (sendButton) {
                     sendButton.click();
                 } else {
