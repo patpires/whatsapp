@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Automation Scripts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .script-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WhatsApp Automation Scripts</h1>
+
+        <div class="script-section">
+            <h2>Mencionar Todos do Grupo</h2>
+            <label for="mensagemMencionar">Mensagem:</label>
+            <textarea id="mensagemMencionar" rows="4" placeholder="Digite sua mensagem aqui"></textarea>
+            <button onclick="mencionarTodos()">Mencionar Todos</button>
+        </div>
+
+        <div class="script-section">
+            <h2>Enviar Mensagem</h2>
+            <label for="contato">Contato ou Grupo:</label>
+            <input type="text" id="contato" placeholder="Nome do Contato ou Grupo">
+            <label for="mensagem">Mensagem:</label>
+            <textarea id="mensagem" rows="4" placeholder="Digite sua mensagem aqui"></textarea>
+            <button onclick="enviarMensagem()">Enviar Mensagem</button>
+        </div>
+
+        <div class="script-section">
+            <h2>Responder Automaticamente</h2>
+            <label for="palavraChave">Palavra-chave:</label>
+            <input type="text" id="palavraChave" placeholder="Palavra-chave">
+            <label for="resposta">Resposta:</label>
+            <textarea id="resposta" rows="4" placeholder="Digite a resposta aqui"></textarea>
+            <button onclick="responderAutomaticamente()">Responder Automaticamente</button>
+        </div>
+
+        <div class="script-section">
+            <h2>Extrair Informações do Grupo</h2>
+            <button onclick="extrairInformacoesDoGrupo()">Extrair Informações</button>
+        </div>
+
+        <div class="script-section">
+            <h2>Marcar Mensagens como Lidas</h2>
+            <button onclick="marcarMensagensComoLidas()">Marcar como Lidas</button>
+        </div>
+    </div>
+
+    <script>
+        function mencionarTodos() {
+            var mensagem = document.getElementById('mensagemMencionar').value;
+            var inputBox = document.querySelectorAll("[contenteditable='true']")[1];
+            var event = new InputEvent('input', { bubbles: true });
+
+            var groupMembers = document.querySelectorAll(".copyable-text span[title]");
+            var mentions = "";
+            groupMembers.forEach(member => {
+                mentions += "@" + member.title + " ";
+            });
+
+            inputBox.innerHTML = mentions + "\n" + mensagem;
+            inputBox.dispatchEvent(event);
+            document.querySelector("span[data-icon='send']").click();
+        }
+
+        function enviarMensagem() {
+            var contato = document.getElementById('contato').value;
+            var mensagem = document.getElementById('mensagem').value;
+            var contatos = document.querySelectorAll("span[title='" + contato + "']");
+            if (contatos.length === 0) {
+                console.log("Contato não encontrado: " + contato);
+                return;
+            }
+            contatos[0].click();
+            var inputBox = document.querySelectorAll("[contenteditable='true']")[1];
+            var event = new InputEvent('input', { bubbles: true });
+            inputBox.innerHTML = mensagem;
+            inputBox.dispatchEvent(event);
+            document.querySelector("span[data-icon='send']").click();
+        }
+
+        function responderAutomaticamente() {
+            var palavraChave = document.getElementById('palavraChave').value;
+            var resposta = document.getElementById('resposta').value;
+            var mensagens = document.querySelectorAll(".message-in .selectable-text span");
+            mensagens.forEach(mensagem => {
+                if (mensagem.innerText.includes(palavraChave)) {
+                    var inputBox = document.querySelectorAll("[contenteditable='true']")[1];
+                    var event = new InputEvent('input', { bubbles: true });
+                    inputBox.innerHTML = resposta;
+                    inputBox.dispatchEvent(event);
+                    document.querySelector("span[data-icon='send']").click();
+                }
+            });
+        }
+
+        function extrairInformacoesDoGrupo() {
+            var membros = document.querySelectorAll(".copyable-text span[title]");
+            var informacoes = [];
+            membros.forEach(membro => {
+                informacoes.push(membro.title);
+            });
+            console.log(informacoes);
+            return informacoes;
+        }
+
+        function marcarMensagensComoLidas() {
+            var mensagensNaoLidas = document.querySelectorAll(".message-in .message-unread");
+            mensagensNaoLidas.forEach(mensagem => {
+                mensagem.click();
+            });
+        }
+    </script>
+</body>
+</html>
