@@ -51,7 +51,7 @@
     <script>
         function mencionarTodos() {
             var mensagem = document.getElementById('mensagemMencionar').value;
-            var inputBox = document.querySelector("div[contenteditable='true']");
+            var inputBox = document.querySelector("div[contenteditable='true'][data-tab='6']");
             if (!inputBox) {
                 console.error("Campo de entrada de mensagem não encontrado.");
                 return;
@@ -77,7 +77,7 @@
             // Aguardar um momento para garantir que o conteúdo seja inserido corretamente
             setTimeout(() => {
                 // Selecionar o botão de envio
-                var sendButton = document.querySelector("button[type='button'][data-testid='compose-btn-send']");
+                var sendButton = document.querySelector("span[data-icon='send']");
                 if (sendButton) {
                     sendButton.click();
                 } else {
